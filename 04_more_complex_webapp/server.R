@@ -4,6 +4,7 @@ library(plotly)
 library(RColorBrewer)
 library(dplyr)
 
+setwd("/home/diegollarrull/workspace/heritas_talks/cordoba/code/04_more_complex_webapp/")
 source("include/datos.R", local=T)
 
 #-----------------------------------------
@@ -19,13 +20,13 @@ source("include/datos.R", local=T)
 
 shinyServer(function(input, output, session) {
   output$ui <- renderUI({
-    if (input$exacfilter) {
+    if (input$virusfilter) {
       sliderInput(
-        "exacslider",
+        "virusslider",
         label = "valor",
-        min = min(mtcars$mpg),
-        max = max(mtcars$mpg),
-        value = max(mtcars$mpg) - min(mtcars$mpg)
+        min = floor(min(datos$Virus)),
+        max = ceiling(max(datos$Virus)),
+        value = abs(max(datos$Virus) - min(datos$Virus))
       )
     }
     else{
@@ -38,6 +39,22 @@ shinyServer(function(input, output, session) {
   ## Elementos dinámicos de la interfaz
   ##########################################
   
+  output$pcombo <- renderUI({
+    if (input$tipodato == "porlinea") {
+      selectizeInput(
+          'linea',
+          "Linea",
+          lineas,
+          selected = lineas[1])
+    } else if (input$tipodato == "porsnp") {
+      selectizeInput(
+        'snp',
+        "SNP",
+        snps,
+        selected = snps[1]
+      )
+    }
+  })
   
   #-------------------------------
   # Botones de descarga de .csv
@@ -69,14 +86,14 @@ shinyServer(function(input, output, session) {
   output$selectiontable = renderDataTable({
     selection()
   }, options = list(autoWidth = TRUE))
-  
+  p
   
   #------------------------------------------------------------------
   # Textbox con número de pacientes luego del filtro
   #------------------------------------------------------------------
   
   output$pakno <- renderText({
-    paste0(as.character(dim(dd())[1]), "/", as.character(dim(mtcars)[1]))
+    paste0(as.character(dim(dd())[1]), "/", as.character(dim(datos)[1]))
   })
   
   
@@ -86,10 +103,26 @@ shinyServer(function(input, output, session) {
   ####################################################
   
   dd <-  eventReactive(input$update, {
-    if (input$exacfilter){
-      return (mtcars[mtcars$cyl == input$cyl & mtcars$gear == input$gear & mtcars$mpg <= input$exacslider,]) 
+    print(datos[1])
+    
+    
+    if (input$tipodato == "porlinea"){
+      if (input$virusfilter){
+        return(datos[datos$Linea == input$linea & datos$Virus < input$virusslider,])
+      }
+      else{
+        return(datos[datos$Linea == input$linea,])
+      }
     }
-    return (mtcars[mtcars$cyl == input$cyl & mtcars$gear == input$gear,])
+    else{
+      if (input$virusfilter){
+        return(datos[datos$Snp == input$snp & datos$Virus < input$virusslider,])
+      }
+      else{
+        return(datos[datos$Snp == input$snp,])
+      }
+    }
+    return (datos)(s)
   })
   
   
@@ -115,8 +148,8 @@ shinyServer(function(input, output, session) {
       
       
       plot <- plot_ly(
-        x = factor(xax),
-        y = factor(yax),
+        x = xax,
+        y = yax,
         type = 'scatter',
         mode = 'markers'
       )
@@ -134,9 +167,9 @@ shinyServer(function(input, output, session) {
     
       
       plot <- plot_ly(
-        x = factor(xax),
-        y = factor(yax),
-        z = factor(zax),
+        x = xax,
+        y = yax,
+        z = zax,
         type = 'scatter3d',
         mode = 'markers'
       )

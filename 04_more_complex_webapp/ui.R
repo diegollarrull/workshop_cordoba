@@ -1,7 +1,8 @@
-
+library(plotly)
 library(shiny)
 library(shinythemes)
 
+setwd("/home/diegollarrull/workspace/heritas_talks/cordoba/code/04_more_complex_webapp/")
 source("include/datos.R", local=T)
 
 ####################################################
@@ -21,26 +22,22 @@ shinyUI(fluidPage(
   ),
   list(
     fluidRow(column(6,
-                    wellPanel(
-                      fluidRow(
-                        column(
-                          8,
-                          selectizeInput(
-                            'cyl',
-                            "Cylinders",
-                            cylinders,
-                            selected = cylinders[1]
-                          ),
-                          selectizeInput(
-                            'gear',
-                            "Number of Gears",
-                            gears,
-                            selected = gears[1]
-                          )
-                        ),
+                    wellPanel(fluidRow(
+                        column(8,
+                          fluidRow(column(3,
+                              radioButtons(
+                                "tipodato",
+                                "Filter type:",
+                                c(
+                                  "Linea" = "porlinea",
+                                  "SNP" = "porsnp"
+                                )
+                          )),
+                          column(9, uiOutput("pcombo"))
+                        )),
                         column(
                           4,
-                          checkboxInput('exacfilter', 'Filtrar por mpg', FALSE),
+                          checkboxInput('virusfilter', 'Filtrar por virus', FALSE),
                           uiOutput("ui"),
                           align = "center",
                           style = "vertical-align: bottom;",
