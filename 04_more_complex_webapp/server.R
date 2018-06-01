@@ -4,8 +4,10 @@ library(plotly)
 library(RColorBrewer)
 library(dplyr)
 
-setwd("/home/diegollarrull/workspace/heritas_talks/cordoba/code/04_more_complex_webapp/")
-source("include/datos.R", local=T)
+setwd(
+  "/home/diegollarrull/workspace/heritas_talks/cordoba/code/04_more_complex_webapp/"
+)
+source("include/datos.R", local = T)
 
 #-----------------------------------------
 # Configuración de credenciales de Plotly
@@ -41,18 +43,15 @@ shinyServer(function(input, output, session) {
   
   output$pcombo <- renderUI({
     if (input$tipodato == "porlinea") {
-      selectizeInput(
-          'linea',
-          "Linea",
-          lineas,
-          selected = lineas[1])
+      selectizeInput('linea',
+                     "Linea",
+                     lineas,
+                     selected = lineas[1])
     } else if (input$tipodato == "porsnp") {
-      selectizeInput(
-        'snp',
-        "SNP",
-        snps,
-        selected = snps[1]
-      )
+      selectizeInput('snp',
+                     "SNP",
+                     snps,
+                     selected = snps[1])
     }
   })
   
@@ -106,20 +105,22 @@ shinyServer(function(input, output, session) {
     print(datos[1])
     
     
-    if (input$tipodato == "porlinea"){
-      if (input$virusfilter){
-        return(datos[datos$Linea == input$linea & datos$Virus < input$virusslider,])
+    if (input$tipodato == "porlinea") {
+      if (input$virusfilter) {
+        return(datos[datos$Linea == input$linea &
+                       datos$Virus < input$virusslider, ])
       }
       else{
-        return(datos[datos$Linea == input$linea,])
+        return(datos[datos$Linea == input$linea, ])
       }
     }
     else{
-      if (input$virusfilter){
-        return(datos[datos$Snp == input$snp & datos$Virus < input$virusslider,])
+      if (input$virusfilter) {
+        return(datos[datos$Snp == input$snp &
+                       datos$Virus < input$virusslider, ])
       }
       else{
-        return(datos[datos$Snp == input$snp,])
+        return(datos[datos$Snp == input$snp, ])
       }
     }
     return (datos)(s)
@@ -164,7 +165,7 @@ shinyServer(function(input, output, session) {
       xax <- d[, input$xaxis]
       yax <- d[, input$yaxis]
       zax <- d[, input$zaxis]
-    
+      
       
       plot <- plot_ly(
         x = xax,

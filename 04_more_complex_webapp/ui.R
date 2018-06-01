@@ -1,9 +1,13 @@
+
+
 library(plotly)
 library(shiny)
 library(shinythemes)
 
-setwd("/home/diegollarrull/workspace/heritas_talks/cordoba/code/04_more_complex_webapp/")
-source("include/datos.R", local=T)
+setwd(
+  "/home/diegollarrull/workspace/heritas_talks/cordoba/code/04_more_complex_webapp/"
+)
+source("include/datos.R", local = T)
 
 ####################################################
 ## Interfaz de usuario
@@ -19,22 +23,22 @@ shinyUI(fluidPage(
       <div class='clear-both'></div>"
     ),
     windowTitle = "Una app un poco más compleja"
-  ),
+    ),
   list(
     fluidRow(column(6,
-                    wellPanel(fluidRow(
+                    wellPanel(
+                      fluidRow(
                         column(8,
-                          fluidRow(column(3,
-                              radioButtons(
-                                "tipodato",
-                                "Filter type:",
-                                c(
-                                  "Linea" = "porlinea",
-                                  "SNP" = "porsnp"
-                                )
-                          )),
-                          column(9, uiOutput("pcombo"))
-                        )),
+                               fluidRow(
+                                 column(3,
+                                        radioButtons(
+                                          "tipodato",
+                                          "Filter type:",
+                                          c("Linea" = "porlinea",
+                                            "SNP" = "porsnp")
+                                        )),
+                                 column(9, uiOutput("pcombo"))
+                               )),
                         column(
                           4,
                           checkboxInput('virusfilter', 'Filtrar por virus', FALSE),
@@ -70,6 +74,8 @@ shinyUI(fluidPage(
         "Datos en CSV",
         dataTableOutput('muttable'),
         downloadButton('MutationExplorerFilterExport.csv', 'Download Current Filter')
-      )),
-   shinythemes::themeSelector()
-)))
+      )
+    ),
+    shinythemes::themeSelector()
+  )
+  ))
